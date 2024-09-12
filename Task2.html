@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1e1f29;
+            color: #61dafb;
+            margin: 0;
+        }
+
+        .stopwatch {
+            text-align: center;
+            background-color: #282a36;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+
+        #display {
+            font-size: 4rem;
+            margin: 20px 0;
+            color: #50fa7b;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s, background-color 0.2s ease;
+            margin: 10px;
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #startPause {
+            background-color: #28a745;
+        }
+
+        #reset {
+            background-color: #dc3545;
+        }
+
+        #lap {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        li {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            border-left: 5px solid #61dafb;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #61dafb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stopwatch">
+        <p id="display">00:00:00.000</p>
+        <button id="startPause">Start</button>
+        <button id="reset">Reset</button>
+        <button id="lap">Lap</button>
+        <ul id="laps"></ul>
+    </div>
+    <script>
+        let timer;
+        let time = 0;
+        let lapCounter = 1;
+
+        function startPause() {
+            if (!timer) {
+                timer = setInterval(runStopwatch, 10);
+                document.getElementById("startPause").textContent = "Pause";
+            } else {
+                clearInterval(timer);
+                timer = null;
+                document.getElementById("startPause").textContent = "Resume";
+            }
+        }
+
+        function reset() {
+            clearInterval(timer);
+            timer = null;
+            time = 0;
+            lapCounter = 1;
+            document.getElementById("display").textContent = formatTime(time);
+            document.getElementById("startPause").textContent = "Start";
+            document.getElementById("laps").innerHTML = "";
+        }
+
+        function lap() {
+            if (timer) {
+                const lapTime = time;
+                const lapItem = document.createElement("li");
+                lapItem.textContent = `Lap ${lapCounter}: ${formatTime(lapTime)}`;
+                document.getElementById("laps").appendChild(lapItem);
+                lapCounter++;
+            }
+        }
+
+        function runStopwatch() {
+            time += 10;
+            document.getElementById("display").textContent = formatTime(time);
+        }
+
+        function formatTime(milliseconds) {
+            const date = new Date(milliseconds);
+            return date.toISOString().substr(11, 11);
+        }
+
+        document.getElementById("startPause").addEventListener("click", startPause);
+        document.getElementById("reset").addEventListener("click", reset);
+        document.getElementById("lap").addEventListener("click", lap);
+    </script>
+</body>
+
+</html>
